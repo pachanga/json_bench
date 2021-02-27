@@ -8,7 +8,7 @@ SRC=$DIR/test.cs
 EXE=$DIR/test.exe
 
 if [ $EXE -ot $SRC ]; then 
-  mcs $SRC -debug -out:$EXE
+  mcs $SRC -debug -r:$DIR/Newtonsoft.Json.dll -out:$EXE
 fi
 
 mono --debug $EXE $*

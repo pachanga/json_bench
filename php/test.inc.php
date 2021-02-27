@@ -5,7 +5,40 @@ function is_win()
   return !(DIRECTORY_SEPARATOR == '/');
 }
 
-function scan_files(array $dirs, array $only_extensions = array(), $mode = 1)
+function scan_files($dir, array $fnmatch_patterns = array())
+{
+  $results = array();
+  $files = scandir($dir);
+
+  foreach($files as $file) 
+  {
+    $path = realpath($dir . '/' . $file);
+    if(!is_dir($path)) 
+    {
+      if($fnmatch_patterns)
+      {
+        foreach($fnmatch_patterns as $pattern)
+        {
+          if(fnmatch($pattern, $file))
+          {
+            $results[] = $path;
+            break;
+          }
+        }
+      }
+      else
+        $results[] = $path;
+    } 
+    else if($file != "." && $file != "..") 
+    {
+      $results = array_merge($results, scan_files($path, $fnmatch_patterns));
+    }
+  }
+
+  return $results;
+}
+
+function scan_files_old(array $dirs, array $only_extensions = array())
 {
   $files = array();
   foreach($dirs as $dir)
@@ -15,13 +48,12 @@ function scan_files(array $dirs, array $only_extensions = array(), $mode = 1)
 
     $dir = normalize_path($dir);
 
-    $iter_mode = $mode == 1 ? RecursiveIteratorIterator::LEAVES_ONLY : RecursiveIteratorIterator::SELF_FIRST; 
+    $iter_mode = RecursiveIteratorIterator::LEAVES_ONLY;
     $iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), $iter_mode);
 
     foreach($iter as $filename => $cur) 
     {
-      if(($mode == 1 && !$cur->isDir()) || 
-         ($mode == 2 && $cur->isDir()))
+      if(!$cur->isDir())
       {
         if(!$only_extensions)
           $files[] = $filename;
