@@ -5,7 +5,7 @@ function is_win()
   return !(DIRECTORY_SEPARATOR == '/');
 }
 
-function scan_files_rec(array $dirs, array $only_extensions = array(), $mode = 1)
+function scan_files(array $dirs, array $only_extensions = array(), $mode = 1)
 {
   $files = array();
   foreach($dirs as $dir)

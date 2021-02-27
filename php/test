@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 include_once(__DIR__ . '/test.inc.php');
@@ -37,7 +38,7 @@ if(isset($argv[1]))
 else
 {
   $t = microtime(true);
-  $files = scan_files_rec(array(__DIR__ . '/../files/'), array('.js'));
+  $files = scan_files(array(__DIR__ . '/../files/'), array('.js'));
   echo "Scan: " . (microtime(true) - $t) . "\n";
   echo "Files: " . sizeof($files) . "\n";
 

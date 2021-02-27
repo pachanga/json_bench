@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+SRC=$DIR/test.cs
+EXE=$DIR/test.exe
+
+if [ $EXE -ot $SRC ]; then 
+  mcs $SRC -debug -out:$EXE
+fi
+
+mono --debug $EXE $*
