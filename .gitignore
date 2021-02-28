@@ -1,4 +1,6 @@
 tags*
 files/
+obj/
+bin/
 *.exe
 *.exe.mdb

@@ -5,16 +5,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
+//using ServiceStack.Text;
+//using Newtonsoft.Json;
+using System.Text.Json;
 
 public static class BenchTest
 {
   public static void Main(string[] args)
   {
-    var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+    var dir = args[0];
     var sw = new Stopwatch();
     sw.Start();
-    var files = Directory.GetFiles(dir + "/../files", "*.js", SearchOption.AllDirectories);
+    var files = Directory.GetFiles(dir, "*.js", SearchOption.AllDirectories);
     Console.WriteLine($"Scan: {Math.Round(sw.ElapsedMilliseconds/1000.0f,2)}");
     Console.WriteLine("Files: " + files.Length);
 
@@ -60,7 +62,11 @@ public static class BenchTest
       {
         var file = files[i];
         var json = File.ReadAllText(file);
-        var obj = JsonConvert.DeserializeObject<Dictionary<string,object>>(json);
+        //var obj = JsonSerializer.DeserializeFromString<Dictionary<string,JsonObject>>(json);
+        //var obj = JsonSerializer.Deserialize<Dictionary<string,object>>(json);
+        //var obj = JsonConvert.DeserializeObject<Dictionary<string,object>>(json);
+        var options = new JsonSerializerOptions { ReadCommentHandling = JsonCommentHandling.Skip };
+        var obj = JsonSerializer.Deserialize<Dictionary<string,object>>(json, options);
         if(obj == null)
           throw new Exception("Could not parse json");
       }

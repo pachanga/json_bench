@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+SRC=$DIR/test.cs
+EXE=$DIR/test.exe
+
+if [ $EXE -ot $SRC ]; then 
+  mcs $SRC -debug -r:$DIR/Newtonsoft.Json.dll -r:$DIR/Utf8Json.dll -r:$DIR/ServiceStack.Text.dll -out:$EXE
+fi
+
+mono --debug $EXE $*
