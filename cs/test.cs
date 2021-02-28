@@ -55,8 +55,13 @@ public static class BenchTest
     return () =>
     {
       Console.WriteLine($"Starting worker from {idx}, count {count}, files {files.Count}");
+      int cnt = 0;
       for(int i=idx;i<(idx+count);++i)
       {
+        cnt++;
+        if(cnt % 500 == 0)
+          Console.WriteLine($"Progress worker from {idx}: {(int)((float)(i-idx)/(float)count*100)}%");
+
         var file = files[i];
         var json = File.ReadAllText(file);
         //var obj = ServiceStack.Text.JsonSerializer.DeserializeFromString<M3ConfLevel>(json);
