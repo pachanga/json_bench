@@ -409,8 +409,8 @@ public $chip_marker;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -1518,8 +1518,8 @@ public $y;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -1642,8 +1642,8 @@ public $side;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -1790,8 +1790,8 @@ public $link = array();
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -1940,8 +1940,8 @@ public $type;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -2105,8 +2105,8 @@ public $goal_type;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -2249,8 +2249,8 @@ public $layer0_health;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -2471,8 +2471,8 @@ public $min_on_screen;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -2629,8 +2629,8 @@ public $type;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -2778,8 +2778,8 @@ public $height;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -3018,8 +3018,8 @@ public $sparams = array();
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -3261,8 +3261,8 @@ public $goals = array();
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -3487,8 +3487,8 @@ public $rseed;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -3804,8 +3804,8 @@ public $bg_image_index;
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -4292,8 +4292,8 @@ public $strid = '';
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -4433,8 +4433,8 @@ parent::__construct();
         throw new Exception("Error while filling field '{$FIELDS[$IDX]}': " . $e->getMessage());
       }
 
-      if($root && $assoc && sizeof($message) > 0)
-        throw new Exception("Junk fields: " . implode(',', array_keys($message)));
+      //if($root && $assoc && sizeof($message) > 0)
+      //  throw new Exception("Junk fields: " . implode(',', array_keys($message)));
     }
     catch(Exception $e)
     {
@@ -4948,10 +4948,10 @@ function mtg_flt_str2num($val, $name, $struct, $args)
   return 1*$val;
 }
 
-function mtg_php_array_extract_val(&$arr, $assoc, $name, $default = null)
+function mtg_php_array_extract_val(array &$arr, $assoc, $name, $default = null)
 {
-  if(!is_array($arr))
-    throw new Exception("$name: Not an array");
+  //if(!is_array($arr))
+  //  throw new Exception("$name: Not an array");
 
   if(!$assoc)
   {
@@ -4974,7 +4974,7 @@ function mtg_php_array_extract_val(&$arr, $assoc, $name, $default = null)
   }
 
   $val = $arr[$name];
-  unset($arr[$name]);
+  //unset($arr[$name]);
   return $val;
 }
 
