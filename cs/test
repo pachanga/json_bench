@@ -2,4 +2,10 @@
 
 set -e
 
-dotnet run -- ../files
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [[ $DIR/test.cs -nt $DIR/bin/Debug/net5.0/cs.dll ]]; then
+  dotnet build
+fi
+
+dotnet $DIR/bin/Debug/net5.0/cs.dll ../files
