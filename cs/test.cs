@@ -64,14 +64,14 @@ public static class BenchTest
 
         var file = files[i];
         var json = File.ReadAllText(file);
-        //var obj = Utf8Json.JsonSerializer.DeserializeFromString<M3ConfLevel>(json);
+        var obj = Utf8Json.JsonSerializer.Deserialize<M3ConfLevel>(json);
         //ServiceStack
         //M3ConfLevel obj = null;
         //using(ServiceStack.Text.JsConfig.With(includePublicFields: true)) { 
         //  obj = ServiceStack.Text.JsonSerializer.DeserializeFromString<M3ConfLevel>(json); 
         //}
         //Newtonsoft
-        var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<M3ConfLevel>(json);
+        //var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<M3ConfLevel>(json);
         //standard
         //var obj = System.Text.Json.JsonSerializer.Deserialize<M3ConfLevel>(json, 
         //   new System.Text.Json.JsonSerializerOptions { 
