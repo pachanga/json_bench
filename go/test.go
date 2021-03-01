@@ -1,7 +1,9 @@
 package main
 
 import (
-	"encoding/json"
+	//"encoding/json"
+	//"github.com/mailru/easyjson"
+	"github.com/ugorji/go/codec"
 	"io/ioutil"
 	"log"
 	"math"
@@ -79,7 +81,13 @@ func main() {
 				content := string(bytes[:])
 				content = re.ReplaceAllString(content, ``)
 				var lvl M3ConfLevel
-				err = json.Unmarshal([]byte(content), &lvl)
+
+				//err = json.Unmarshal([]byte(content), &lvl)
+
+				var h codec.Handle = new(codec.JsonHandle)
+				var dec *codec.Decoder = codec.NewDecoderBytes([]byte(content), h)
+				err = dec.Decode(&lvl)
+
 				if err != nil {
 					log.Fatalf("%s : %v", file, err)
 				}
