@@ -25,10 +25,10 @@ function parse_configs(array $files)
   foreach($files as $idx => $file)
   {
     if($idx > 0 && ($idx % 1000) === 0)
-      echo "Done ".($idx/sizeof($files)*100)."\n";
+      echo "Progress ".ceil($idx/sizeof($files)*100)."%\n";
     parse_config($file);
   }
-  echo "Parse: " . (microtime(true) - $t) . "\n";
+  echo "Parsed: " . (microtime(true) - $t) . "\n";
 }
 
 if(isset($argv[1]))
