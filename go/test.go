@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -31,24 +32,73 @@ func main() {
 
 	var re = regexp.MustCompile(`/\*[^\*]+\*/`)
 
+	//t = time.Now()
+	//for idx, file := range files {
+	//	if idx > 0 && idx%1000 == 0 {
+	//		log.Printf("Progress %f %%", float32(idx)/float32(len(files))*100)
+	//	}
+	//	bytes, err := ioutil.ReadFile(file)
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	content := string(bytes[:])
+	//	content = re.ReplaceAllString(content, ``)
+	//	var lvl M3ConfLevel
+	//	err = json.Unmarshal([]byte(content), &lvl)
+	//	if err != nil {
+	//		log.Fatalf("%s : %v", file, err)
+	//	}
+	//}
+	//log.Printf("Parse: %s", time.Since(t))
+
+	max_workers := 16
+	files_per_worker := int(math.Ceil(float64(len(files)) / float64(max_workers)))
+
 	t = time.Now()
-	for idx, file := range files {
-		if idx > 0 && idx%1000 == 0 {
-			log.Printf("Progress %f %%", float32(idx)/float32(len(files))*100)
+	workers := 0
+	idx := 0
+	done := make(chan bool)
+	for idx < len(files) {
+		count := files_per_worker
+		if idx+files_per_worker > len(files) {
+			count = len(files) - idx
 		}
-		bytes, err := ioutil.ReadFile(file)
-		if err != nil {
-			panic(err)
-		}
-		content := string(bytes[:])
-		content = re.ReplaceAllString(content, ``)
-		var lvl M3ConfLevel
-		err = json.Unmarshal([]byte(content), &lvl)
-		if err != nil {
-			log.Fatalf("%s : %v", file, err)
-		}
+
+		go func(start int, count int, files []string, done chan bool) {
+			cnt := 0
+			for idx := start; idx < start+count; idx++ {
+				if cnt > 0 && cnt%500 == 0 {
+					log.Printf("Progress %d %f %%", start, float32(cnt)/float32(count)*100)
+				}
+				cnt++
+				file := files[idx]
+				bytes, err := ioutil.ReadFile(file)
+				if err != nil {
+					panic(err)
+				}
+				content := string(bytes[:])
+				content = re.ReplaceAllString(content, ``)
+				var lvl M3ConfLevel
+				err = json.Unmarshal([]byte(content), &lvl)
+				if err != nil {
+					log.Fatalf("%s : %v", file, err)
+				}
+				if lvl.Turns_limit == 0 {
+					log.Fatalf("%s : turns_limit = 0", file)
+				}
+			}
+			done <- true
+		}(idx, count, files, done)
+		workers++
+
+		idx += count
+	}
+
+	for i := 0; i < workers; i++ {
+		<-done
 	}
 	log.Printf("Parse: %s", time.Since(t))
+
 }
 
 type M3ConfLevel struct {
