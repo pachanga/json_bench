@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+files = Dir.glob("../files/**/*.js")
+files.each do |file|
+  json = IO.read(file)
+  JSON.parse(json)
+end
+
