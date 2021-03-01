@@ -2,7 +2,6 @@ package main
 
 import (
 	//"encoding/json"
-	//"github.com/mailru/easyjson"
 	"github.com/ugorji/go/codec"
 	"io/ioutil"
 	"log"
@@ -78,9 +77,11 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				content := string(bytes[:])
+				content := string(bytes)
 				content = re.ReplaceAllString(content, ``)
 				var lvl M3ConfLevel
+
+				//err = lvl.UnmarshalJSON([]byte(content))
 
 				//err = json.Unmarshal([]byte(content), &lvl)
 
