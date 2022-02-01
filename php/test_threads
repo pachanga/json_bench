@@ -1,0 +1,87 @@
+#!/usr/bin/env php
+<?php
+ini_set('memory_limit', -1);
+
+include_once(__DIR__ . '/test.inc.php');
+include_once(__DIR__ . '/jzon.inc.php');
+
+function parse_config($file)
+{
+  $jzon = file_get_contents($file);
+  $jzon = config_extract_header($jzon);
+  //$res = jzon_parse($jzon);
+  $res = json_decode($jzon, true);
+  if(!is_array($res))
+    throw new Exception("Bad json: $file " . json_last_error());
+
+  unset($res['class']);
+  unset($res['strid']);
+  $conf = new M3ConfLevel();
+  $conf->import($res, true);
+  return $conf;
+}
+
+function parse_configs(array $files)
+{
+  $t = microtime(true);
+  $parsed = array();
+  foreach($files as $idx => $file)
+  {
+    if($idx > 0 && ($idx % 1000) === 0)
+      echo "Progress ".ceil($idx/sizeof($files)*100)."%\n";
+    $parsed[] = parse_config($file);
+  }
+  echo "Parsed: " . (microtime(true) - $t) . "\n";
+  return $parsed;
+}
+
+class ConfJob extends Threaded
+{
+  public $idx;
+  public $files;
+  public $result;
+
+  function __construct($idx, array $files)
+  {
+    $this->idx = $idx;
+    $this->files = $files;
+    $this->result = new Volatile();
+  }
+
+  function run()
+  {
+    $files = array();
+    foreach($this->files as $file)
+      $files[] = $file;
+    $this->result->merge(parse_configs($files));
+    echo "Size:" . sizeof($this->result) . "\n";
+  }
+}
+
+$t = microtime(true);
+$files = scan_files(__DIR__ . '/../files/', array('*.js'));
+echo "Scan: " . (microtime(true) - $t) . "\n";
+echo "Files: " . sizeof($files) . "\n";
+
+$t = microtime(true);
+
+$max_workers = 8;
+$pool = new Pool($max_workers);
+
+$chunk_size = ceil(sizeof($files)/$max_workers);
+
+$jobs = array();
+foreach(array_chunk($files, $chunk_size) as $idx => $chunk_files)
+  $jobs[] = new ConfJob($idx, $chunk_files);
+
+foreach($jobs as $job)
+  $pool->submit($job);
+
+while($pool->collect());
+$pool->shutdown();
+
+foreach($jobs as $job)
+  echo "Result: " . $job->result[0]->turns_limit . "\n";
+
+echo "Done " . (microtime(true) - $t) . "\n";
+

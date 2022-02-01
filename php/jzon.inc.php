@@ -1,8 +1,10 @@
 <?php
 
-if(!defined('JZON_VERSION'))
+if(!defined('JZON_PHP_VERSION'))
 {
-  define('JZON_VERSION', '0.0.3');
+  define('JZON_PHP_VERSION', '0.0.3');
+  //NOTE: see php_jsoh.h
+  //      will be false if jzon extension is not loaded
   define('JZON_EXT_VERSION', phpversion('jzon'));
 }
 
@@ -93,35 +95,35 @@ class jzonParser
 
   private function skip_whitespace()
   {
-    //while($this->c < $this->len)
-    //{
+    while($this->c < $this->len)
+    {
       while($this->c < $this->len && (ord($ch = $this->in[$this->c]) <= self::$ORD_SPACE || $ch == ','))
         ++$this->c;
 
-    //  // skip line comment.
-    //  if($this->c < $this->len && $this->in[$this->c] === '/' && $this->c+1 < $this->len && $this->in[$this->c+1] === '/')
-    //  {
-    //    ++$this->c;
-    //    while($this->c < $this->len && $this->in[$this->c] != "\n")
-    //      ++$this->c;
-    //  }
-    //  else
-    //    break;
-    //}
+      // skip comment.
+      if($this->c < $this->len && $this->in[$this->c] === '#')
+      {
+        ++$this->c;
+        while($this->c < $this->len && $this->in[$this->c] != "\n")
+          ++$this->c;
+      }
+      else
+        break;
+    }
   }
 
   private function parse_object(&$out, $root_object)
   {
-    if(isset($this->in[$this->c]) && $this->in[$this->c] == '{')
+    if($this->in[$this->c] == '{')
       ++$this->c;
-    else if(!$root_object)
+    else if (!$root_object)
       $this->_error("No root object");
 
     $this->skip_whitespace();
 
     $out = array();
     // Empty object.
-    if(isset($this->in[$this->c]) && $this->in[$this->c] == '}')
+    if($this->in[$this->c] == '}')
     {
       ++$this->c;
       return;
@@ -152,7 +154,7 @@ class jzonParser
         break;
       }
     }
-    return;
+    return 0;
   }
 
   private function parse_array(&$out)
@@ -235,9 +237,6 @@ class jzonParser
   {
     if($this->in[$this->c] != '"')
       return null;
-
-    //if(is_multiline_string_quotes(*input))
-    //  return parse_multiline_string(input, allocator);
 
     ++$this->c;
     $start = $this->c;
@@ -328,11 +327,20 @@ class jzonParser
     else
       $this->_error("'null' expected");
   }
-
 }
 
 function jzon_parse($str)
 {
-  $p = new jzonParser($str);
-  return $p->parse();
+  if(JZON_EXT_VERSION === JZON_PHP_VERSION)
+  {
+    list($ok, $err, $err_pos, $res) = jzon_parse_c($str);
+    if(!$ok)
+      throw new Exception($err . "\n" . jzon_show_position($err_pos, $str, jzonParser::ERR_CONTEXT_CHARS));
+    return $res;
+  }
+  else
+  {
+    $p = new jzonParser($str);
+    return $p->parse();
+  }
 }

@@ -19,17 +19,20 @@ public static class BenchTest
 
     sw.Start();
 
-    int max_threads = 10;
+    int max_threads = 8;
 
     int files_per_worker = files.Length < max_threads ? files.Length : (int)Math.Ceiling((float)files.Length / (float)max_threads);
     int idx = 0;
 
     var threads = new List<Thread>();
+    var parsed = new List<List<M3ConfLevel>>();
     while(idx < files.Length)
     {
       int count = (idx + files_per_worker) > files.Length ? (files.Length - idx) : files_per_worker; 
 
-      var th = new Thread(MakeWorker(idx, count, files));
+      var res = new List<M3ConfLevel>(); 
+      parsed.Add(res);
+      var th = new Thread(MakeWorker(idx, count, files, res));
       threads.Add(th);
       th.Start();
 
@@ -47,10 +50,13 @@ public static class BenchTest
     //    throw new Exception("Could not parse json");
     //}
 
+    foreach(var item in parsed)
+      Console.WriteLine($"Result: {item[0].turns_limit}");
+
     Console.WriteLine($"Parse: {Math.Round(sw.ElapsedMilliseconds/1000.0f,2)}");
   }
 
-  static ThreadStart MakeWorker(int idx, int count, IList<string> files)
+  static ThreadStart MakeWorker(int idx, int count, IList<string> files, List<M3ConfLevel> results)
   {
     return () =>
     {
@@ -64,25 +70,34 @@ public static class BenchTest
 
         var file = files[i];
         var json = File.ReadAllText(file);
-        var obj = Utf8Json.JsonSerializer.Deserialize<M3ConfLevel>(json);
+
+        //Utf8Json
+        //var obj = Utf8Json.JsonSerializer.Deserialize<M3ConfLevel>(json);
+
         //ServiceStack
         //M3ConfLevel obj = null;
         //using(ServiceStack.Text.JsConfig.With(includePublicFields: true)) { 
         //  obj = ServiceStack.Text.JsonSerializer.DeserializeFromString<M3ConfLevel>(json); 
         //}
+
+        //supports trailing comma!
         //Newtonsoft
-        //var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<M3ConfLevel>(json);
+        var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<M3ConfLevel>(json);
+
         //standard
         //var obj = System.Text.Json.JsonSerializer.Deserialize<M3ConfLevel>(json, 
         //   new System.Text.Json.JsonSerializerOptions { 
+        //    AllowTrailingCommas = true,
         //    ReadCommentHandling = System.Text.Json.JsonCommentHandling.Skip,
         //    IncludeFields = true
         //   });
+
         if(obj == null)
           throw new Exception("Could not parse json");
         if(obj.turns_limit == 0)
           throw new Exception("Turns limit = 0");
         //Console.WriteLine($"File {file}, turns limit {obj.turns_limit}, fields: {obj.fields.Count}");
+        results.Add(obj);
       }
       Console.WriteLine($"Done worker from {idx}, count {count}");
     };

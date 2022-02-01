@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+ini_set('memory_limit', -1);
 
 include_once(__DIR__ . '/test.inc.php');
 include_once(__DIR__ . '/jzon.inc.php');
@@ -8,8 +9,8 @@ function parse_config($file)
 {
   $jzon = file_get_contents($file);
   $jzon = config_extract_header($jzon);
-  //$res = jzon_parse($jzon);
-  $res = json_decode($jzon, true);
+  $res = jzon_parse($jzon);
+  //$res = json_decode($jzon, true);
   if(!is_array($res))
     throw new Exception("Bad json: $file " . json_last_error());
 
@@ -17,18 +18,21 @@ function parse_config($file)
   unset($res['strid']);
   $conf = new M3ConfLevel();
   $conf->import($res, true);
+  return $conf;
 }
 
 function parse_configs(array $files)
 {
   $t = microtime(true);
+  $parsed = array();
   foreach($files as $idx => $file)
   {
     if($idx > 0 && ($idx % 1000) === 0)
       echo "Progress ".ceil($idx/sizeof($files)*100)."%\n";
-    parse_config($file);
+    $parsed[] = parse_config($file);
   }
   echo "Parsed: " . (microtime(true) - $t) . "\n";
+  return $parsed;
 }
 
 if(isset($argv[1]))
@@ -36,9 +40,9 @@ if(isset($argv[1]))
   $args = unserialize(file_get_contents($argv[1]));
   list($idx, $files) = $args;
   echo "Worker $idx " . sizeof($files) . "\n";
-  parse_configs($files);
+  $parsed = parse_configs($files);
   echo "Worker $idx done\n";
-  file_put_contents($argv[2], serialize(true));
+  file_put_contents($argv[2], serialize($parsed));
 }
 else
 {
@@ -48,17 +52,23 @@ else
   echo "Scan: " . (microtime(true) - $t) . "\n";
   echo "Files: " . sizeof($files) . "\n";
 
+  //serial
   //$t = microtime(true);
   //parse_configs($files);
   //echo "Done " . (microtime(true) - $t) . "\n";
 
-  $max_workers = 5;
+  //paral
+  $max_workers = 8;
   $chunk_size = ceil(sizeof($files)/$max_workers);
   $jobs = array();
   foreach(array_chunk($files, $chunk_size) as $idx => $chunk_files)
     $jobs[] = array($idx, $chunk_files);
 
   $t = microtime(true);
-  run_background_workers(__FILE__, $jobs);
+
+  $results = run_background_workers(__FILE__, $jobs);
+  foreach($results as $result)
+    echo "Result: " . $result[0]->turns_limit . "\n";
+
   echo "Done " . (microtime(true) - $t) . "\n";
 }
